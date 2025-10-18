@@ -1,0 +1,12 @@
+18/10
+Primero se crearon los registros dados, de Capacitacion y Alumnos
+Se creo un procedimiento para cargar y guardar una capacitacion
+Se creo un procedimiento para mostrar una capacitacion
+Se creo un procedimiento para el menu principal
+Se creo un procedimiento para el menu de capacitaciones
+Se creo un procedimiento para el menu de estadisticas
+Se creo un procedimiento para el menu de alumnos
+Se creo un procedimiento para el menu de listados
+Se creo el begin principal
+Se puede correr el programa y probar
+Fin 18/10
