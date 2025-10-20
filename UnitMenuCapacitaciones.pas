@@ -186,7 +186,6 @@ Begin
     readkey;
 
   Until false;
-  // se puede cambiar por una opción de salir si querés
   close(Archivo_Capacitaciones);
 End;
 
