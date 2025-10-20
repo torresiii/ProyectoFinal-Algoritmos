@@ -17,3 +17,6 @@ Se modifico el menu de alumnos
 Se creo una unit para las cargas y muestras de capacitaciones y alumnos
 Se creo una unit para cada menu (menos el menu principal)
 Se puede correr el programa y probar
+Se modifico el menu de capacitaciones
+Fin 19/10
+Inicio 20/10
