@@ -21,12 +21,13 @@ Begin
            clrscr;
            writeln('Saliendo del programa...');
            delay(1000);
+           //delay le agrega tiempo al mostrar
          End;
       Else
         Begin
           clrscr;
           writeln('Opcion invalida.');
-          writeln('Presione una tecla para continuar...');
+          writeln('Presione una tecla para volver...');
           readkey;
         End;
     End;

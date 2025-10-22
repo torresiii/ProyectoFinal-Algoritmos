@@ -162,7 +162,9 @@ Begin
 
   Repeat
     clrscr;
+    textcolor(yellow);
     write('Ingrese el codigo de la capacitacion (0 para salir): ');
+    textcolor(white);
     readln(codigo_cap);
 
     If codigo_cap = '0' Then
@@ -194,9 +196,10 @@ Begin
 
           clrscr;
           writeln('Capacitacion encontrada:');
+          textcolor(green);
           Mostrar_Capacitacion(c);
           writeln;
-
+          textcolor(yellow);
           writeln('1. Modificar');
           writeln('2. Dar de baja');
           writeln('3. Dar de alta');
@@ -212,7 +215,7 @@ Begin
 
         Until opcion = 0;
       End;
-
+    textcolor(red);
     writeln('Presione cualquier tecla para continuar...');
     readkey;
 

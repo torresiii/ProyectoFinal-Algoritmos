@@ -28,3 +28,5 @@ Se modifico el menu de capacitaciones (correccion de errores)
 Se modifico el menu de alumnos (correccion de errores)
 Se puede correr el programa y probar
 Se unio Meli
+Se creo el menu de opciones de estadisticas
+Se creo el menu de opciones de listados
