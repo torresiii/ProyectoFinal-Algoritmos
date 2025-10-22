@@ -22,3 +22,8 @@ Fin 19/10
 Inicio 20/10
 Se movio todo a units
 Se creo la unit para el menu principal
+Fin 20/10
+Inicio 22/10
+Se modifico el menu de capacitaciones (correccion de errores)
+Se modifico el menu de alumnos (correccion de errores)
+Se puede correr el programa y probar

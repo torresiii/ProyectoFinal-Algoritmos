@@ -30,6 +30,26 @@ Begin
   Buscar_Capacitacion := pos;
 End;
 
+// Dar de alta
+Procedure DarDeAlta(pos: integer);
+
+Var 
+  c: T_Capacitaciones;
+Begin
+  seek(Archivo_Capacitaciones, pos);
+  read(Archivo_Capacitaciones, c);
+  If c.Estado_Capacitacion = true Then
+    writeln('La capacitacion ya esta activa.')
+  Else
+    Begin
+      c.Estado_Capacitacion := true;
+      seek(Archivo_Capacitaciones, pos);
+      write(Archivo_Capacitaciones, c);
+      writeln('Capacitacion dada de alta correctamente.');
+    End;
+End;
+
+
 // Dar de baja
 Procedure DarDeBaja(pos: integer);
 
@@ -142,9 +162,12 @@ Begin
 
   Repeat
     clrscr;
-    // Pedimos el código al abrir el menú
-    write('Ingrese el codigo de la capacitacion: ');
+    write('Ingrese el codigo de la capacitacion (0 para salir): ');
     readln(codigo_cap);
+
+    If codigo_cap = '0' Then
+      Break;
+
     pos := Buscar_Capacitacion(codigo_cap);
 
     If pos = -1 Then
@@ -155,37 +178,46 @@ Begin
         If UpCase(resp) = 'S' Then
           Begin
             Cargar_Capacitacion(c);
+            c.Codigo_Capacitacion := codigo_cap;
+            // aseguramos mismo código ingresado
+            c.Estado_Capacitacion := true;
             seek(Archivo_Capacitaciones, filesize(Archivo_Capacitaciones));
             write(Archivo_Capacitaciones, c);
             writeln('Capacitacion agregada correctamente.');
-          End
-        Else
-          writeln('No se realizo ninguna accion.');
+          End;
       End
     Else
       Begin
-        seek(Archivo_Capacitaciones, pos);
-        read(Archivo_Capacitaciones, c);
-        clrscr;
-        writeln('Capacitacion encontrada:');
-        Mostrar_Capacitacion(c);
-        writeln;
-        writeln('1. Modificar');
-        writeln('2. Dar de baja');
-        writeln('0. Volver');
-        write('Opcion: ');
-        readln(opcion);
+        Repeat
+          seek(Archivo_Capacitaciones, pos);
+          read(Archivo_Capacitaciones, c);
 
-        Case opcion Of 
-          1: Modificar_Capacitacion(pos);
-          2: DarDeBaja(pos);
-        End;
+          clrscr;
+          writeln('Capacitacion encontrada:');
+          Mostrar_Capacitacion(c);
+          writeln;
+
+          writeln('1. Modificar');
+          writeln('2. Dar de baja');
+          writeln('3. Dar de alta');
+          writeln('0. Volver a ingresar otro codigo o salir');
+          write('Opcion: ');
+          readln(opcion);
+
+          Case opcion Of 
+            1: Modificar_Capacitacion(pos);
+            2: DarDeBaja(pos);
+            3: DarDeAlta(pos);
+          End;
+
+        Until opcion = 0;
       End;
 
     writeln('Presione cualquier tecla para continuar...');
     readkey;
 
   Until false;
+
   close(Archivo_Capacitaciones);
 End;
 
