@@ -11,7 +11,6 @@ Var
   Archivo_Capacitaciones: file Of T_Capacitaciones;
 
 Implementation
-
 // Buscar capacitación por código
 Function Buscar_Capacitacion(codigo: String): integer;
 
@@ -48,7 +47,6 @@ Begin
       writeln('Capacitacion dada de alta correctamente.');
     End;
 End;
-
 
 // Dar de baja
 Procedure DarDeBaja(pos: integer);
@@ -143,7 +141,7 @@ Begin
   writeln('Datos modificados correctamente.');
 End;
 
-// MENÚ PRINCIPAL DE CAPACITACIONES
+// MENÚ PRINCIPAL DE CAPACITACIONES (sin break)
 Procedure Menu_Capacitaciones;
 
 Var 
@@ -151,6 +149,7 @@ Var
   codigo_cap: string;
   pos, opcion: integer;
   resp: char;
+  salir: boolean;
 Begin
   clrscr;
   assign(Archivo_Capacitaciones, 'capacitaciones.dat');
@@ -160,6 +159,7 @@ Begin
   If ioresult <> 0 Then
     rewrite(Archivo_Capacitaciones);
 
+  salir := false;
   Repeat
     clrscr;
     textcolor(yellow);
@@ -168,58 +168,61 @@ Begin
     readln(codigo_cap);
 
     If codigo_cap = '0' Then
-      Break;
-
-    pos := Buscar_Capacitacion(codigo_cap);
-
-    If pos = -1 Then
-      Begin
-        writeln('Capacitacion no encontrada.');
-        write('Desea darla de alta? (S/N): ');
-        readln(resp);
-        If UpCase(resp) = 'S' Then
-          Begin
-            Cargar_Capacitacion(c);
-            c.Codigo_Capacitacion := codigo_cap;
-            // aseguramos mismo código ingresado
-            c.Estado_Capacitacion := true;
-            seek(Archivo_Capacitaciones, filesize(Archivo_Capacitaciones));
-            write(Archivo_Capacitaciones, c);
-            writeln('Capacitacion agregada correctamente.');
-          End;
-      End
+      salir := true
     Else
       Begin
-        Repeat
-          seek(Archivo_Capacitaciones, pos);
-          read(Archivo_Capacitaciones, c);
+        pos := Buscar_Capacitacion(codigo_cap);
 
-          clrscr;
-          writeln('Capacitacion encontrada:');
-          textcolor(green);
-          Mostrar_Capacitacion(c);
-          writeln;
-          textcolor(yellow);
-          writeln('1. Modificar');
-          writeln('2. Dar de baja');
-          writeln('3. Dar de alta');
-          writeln('0. Volver a ingresar otro codigo o salir');
-          write('Opcion: ');
-          readln(opcion);
+        If pos = -1 Then
+          Begin
+            writeln('Capacitacion no encontrada.');
+            write('Desea darla de alta? (S/N): ');
+            readln(resp);
+            If UpCase(resp) = 'S' Then
+              Begin
+                Cargar_Capacitacion(c);
+                c.Codigo_Capacitacion := codigo_cap;
+                // aseguramos mismo código ingresado
+                c.Estado_Capacitacion := true;
+                seek(Archivo_Capacitaciones, filesize(Archivo_Capacitaciones));
+                write(Archivo_Capacitaciones, c);
+                writeln('Capacitacion agregada correctamente.');
+              End;
+          End
+        Else
+          Begin
+            Repeat
+              seek(Archivo_Capacitaciones, pos);
+              read(Archivo_Capacitaciones, c);
 
-          Case opcion Of 
-            1: Modificar_Capacitacion(pos);
-            2: DarDeBaja(pos);
-            3: DarDeAlta(pos);
+              clrscr;
+              writeln('Capacitacion encontrada:');
+              textcolor(green);
+              Mostrar_Capacitacion(c);
+              writeln;
+              textcolor(yellow);
+              writeln('1. Modificar');
+              writeln('2. Dar de baja');
+              writeln('3. Dar de alta');
+              writeln('0. Volver a ingresar otro codigo o salir');
+              write('Opcion: ');
+              readln(opcion);
+
+              Case opcion Of 
+                1: Modificar_Capacitacion(pos);
+                2: DarDeBaja(pos);
+                3: DarDeAlta(pos);
+              End;
+
+            Until opcion = 0;
           End;
 
-        Until opcion = 0;
+        textcolor(red);
+        writeln('Presione cualquier tecla para continuar...');
+        readkey;
       End;
-    textcolor(red);
-    writeln('Presione cualquier tecla para continuar...');
-    readkey;
 
-  Until false;
+  Until salir = true;
 
   close(Archivo_Capacitaciones);
 End;
