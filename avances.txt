@@ -30,3 +30,6 @@ Se puede correr el programa y probar
 Se unio Meli
 Se creo el menu de opciones de estadisticas
 Se creo el menu de opciones de listados
+Fin 22/10
+Inicio 27/10
+Segunda Presentacion presencial

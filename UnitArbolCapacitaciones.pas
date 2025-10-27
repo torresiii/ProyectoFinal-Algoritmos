@@ -7,6 +7,7 @@ Uses CargasYMuestras, crt;
 
 
 
+
 // Nodo y operaciones para árbol binario de capacitaciones (clave: Codigo_Capacitacion)
 
 Type 
