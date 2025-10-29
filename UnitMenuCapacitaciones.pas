@@ -2,8 +2,8 @@
 Unit UnitMenuCapacitaciones;
 
 Interface
-
-Uses crt, CargasYMuestras;
+{$CODEPAGE UTF8}
+Uses crt, CargasYMuestras, SysUtils, DateUtils;
 
 Procedure Menu_Capacitaciones;
 
@@ -31,21 +31,65 @@ End;
 
 // Dar de alta
 Procedure DarDeAlta(pos: integer);
-
 Var 
   c: T_Capacitaciones;
+  FechaInicio, FechaFin, Hoy: TDateTime;
+  DiasTranscurridos: Integer;
+  FechaPermitida: boolean;
 Begin
   seek(Archivo_Capacitaciones, pos);
   read(Archivo_Capacitaciones, c);
-  If c.Estado_Capacitacion = true Then
-    writeln('La capacitacion ya esta activa.')
-  Else
-    Begin
-      c.Estado_Capacitacion := true;
-      seek(Archivo_Capacitaciones, pos);
-      write(Archivo_Capacitaciones, c);
-      writeln('Capacitacion dada de alta correctamente.');
-    End;
+
+  Hoy := Date;
+  FechaPermitida := true;
+  FechaInicio := 0;
+  FechaFin := 0;
+
+  // Validamos formato y conversion de fecha de inicio
+  if Length(c.Fecha_Inicio) = 10 then
+    FechaInicio := StrToDate(c.Fecha_Inicio)
+  else
+    FechaPermitida := false;
+
+  // Validamos formato y conversion de fecha de fin
+  if Length(c.Fecha_Fin) = 10 then
+    FechaFin := StrToDate(c.Fecha_Fin)
+  else
+    FechaPermitida := false;
+
+  if not FechaPermitida then
+    writeln('Formato de fecha inválido. Use DD/MM/AAAA.')
+  else
+    begin
+      // se verifica si el curso ya termino
+      if Hoy > FechaFin then
+        writeln('No se puede dar de alta: la capacitación ya finalizó.')
+      else
+        begin
+          if Hoy < FechaInicio then
+            writeln('La capacitación aún no comenzó, puede inscribirse.')
+          else
+            begin
+              // Si la capacitacion empezo, controla si pasaron mas de 5 dias
+              DiasTranscurridos := DaysBetween(FechaInicio, Hoy);
+              if DiasTranscurridos <= 5 then
+                writeln('Capacitación en curso, dentro del plazo permitido para dar de alta.')
+              else
+                writeln('No se puede dar de alta: ya pasaron más de 5 días desde el inicio.');
+            end;
+        end;
+
+      // Se da de alta solo si la capacitación esta inactiva y la fecha es valida
+      if (c.Estado_Capacitacion = false) and (Hoy <= FechaFin) then
+        begin
+          c.Estado_Capacitacion := true;
+          seek(Archivo_Capacitaciones, pos);
+          write(Archivo_Capacitaciones, c);
+          writeln('Capacitación dada de alta correctamente.');
+        end
+      else if c.Estado_Capacitacion = true then
+        writeln('La capacitación ya está activa.');
+    end;
 End;
 
 // Dar de baja
@@ -202,8 +246,12 @@ Begin
               writeln;
               textcolor(yellow);
               writeln('1. Modificar');
-              writeln('2. Dar de baja');
-              writeln('3. Dar de alta');
+
+              If c.Estado_Capacitacion then 
+                writeln('2. Dar de baja')
+              Else
+                writeln('3. Dar de alta');
+
               writeln('0. Volver a ingresar otro codigo o salir');
               write('Opcion: ');
               readln(opcion);

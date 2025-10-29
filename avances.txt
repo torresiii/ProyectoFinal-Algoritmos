@@ -33,3 +33,7 @@ Se creo el menu de opciones de listados
 Fin 22/10
 Inicio 27/10
 Segunda Presentacion presencial
+Inicio 28/10
+Se hacen control de alta y baja  en UnitMenuAlumnos y UnitMenuCapacitaciones
+Se añade validacion de fecha inicio y fin para permitir dar o no de alta un curso
+Fin 29/10

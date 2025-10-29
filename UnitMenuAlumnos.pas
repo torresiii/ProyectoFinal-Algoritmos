@@ -3,7 +3,7 @@ Unit UnitMenuAlumnos;
 
 Interface
 
-Uses crt, CargasYMuestras;
+Uses crt, CargasYMuestras, SysUtils;
 
 Procedure Menu_Alumnos;
 
@@ -152,27 +152,28 @@ Begin
     writeln('Ingrese DNI del alumno (0 para salir): ');
     readln(dni);
 
-    If dni = '0' Then Break;
+    dni := Trim(dni);   // evita que entradas con espacios provoquen que el menu no salga 
+    if dni <> '0' then
+    begin
+      pos := Buscar_Alumno(dni);
 
-    pos := Buscar_Alumno(dni);
-
-    If pos = -1 Then
+      If pos = -1 Then
       Begin
         writeln('Alumno no encontrado.');
         writeln('¿Desea cargarlo? (S/N): ');
-        If UpCase(readkey) = 'S' Then
-          Begin
-            Cargar_Alumnos(a);
-            a.DNI := dni;
-            a.Estado_Alumno := true;
-            seek(Archivo_Alumnos, filesize(Archivo_Alumnos));
-            write(Archivo_Alumnos, a);
-            writeln;
-            writeln('Alumno cargado correctamente.');
-            readkey;
-          End;
+        if UpCase(readkey) = 'S' then
+        begin
+          Cargar_Alumnos(a);
+          a.DNI := dni;
+          a.Estado_Alumno := true;
+          seek(Archivo_Alumnos, filesize(Archivo_Alumnos));
+          write(Archivo_Alumnos, a);
+          writeln;
+          writeln('Alumno cargado correctamente.');
+          readkey;
+        end;
       End
-    Else
+      Else
       Begin
         Repeat
           seek(Archivo_Alumnos, pos);
@@ -181,22 +182,26 @@ Begin
           Mostrar_Alumno(a);
           writeln;
           writeln('1. Modificar datos');
-          writeln('2. Dar de baja');
-          writeln('3. Dar de alta');
+          If a.Estado_Alumno then
+            writeln('2. Dar de baja')
+          else
+            writeln('3. Dar de alta');
+
           writeln('0. Volver');
           write('Opcion: ');
           readln(opcion);
 
-          Case opcion Of 
+          Case opcion Of
             1: Modificar_Alumno(pos);
-            2: DarDeBaja_Alumno(pos);
-            3: DarDeAlta_Alumno(pos);
+            2: If a.Estado_Alumno then DarDeBaja_Alumno(pos);
+            3: If not a.Estado_Alumno then DarDeAlta_Alumno(pos);
           End;
 
         Until opcion = 0;
       End;
+    end; 
 
-  Until false;
+  Until dni = '0';
 
   close(Archivo_Alumnos);
 End;
