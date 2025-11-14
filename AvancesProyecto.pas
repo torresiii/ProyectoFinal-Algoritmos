@@ -1,7 +1,8 @@
 
 Program AvancesProyecto;
 
-Uses crt, CargasYMuestras, UnitMenuAlumnos, UnitMenuCapacitaciones,
+Uses crt, UnitCapacitaciones, UnitAlumnos, UnitMenuAlumnos,
+UnitMenuCapacitaciones,
 UnitMenuListados, UnitMenuEstadisticas, UnitMenuPrincipal;
 
 Var 

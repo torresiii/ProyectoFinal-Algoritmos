@@ -3,9 +3,7 @@ Unit UnitArbolCapacitaciones;
 
 Interface
 
-Uses CargasYMuestras, crt;
-
-
+Uses UnitCapacitaciones, crt;
 
 
 // Nodo y operaciones para árbol binario de capacitaciones (clave: Codigo_Capacitacion)

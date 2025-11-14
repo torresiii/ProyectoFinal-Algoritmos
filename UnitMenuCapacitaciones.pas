@@ -3,7 +3,8 @@ Unit UnitMenuCapacitaciones;
 
 Interface
 {$CODEPAGE UTF8}
-Uses crt, CargasYMuestras, SysUtils, DateUtils;
+
+Uses crt, UnitCapacitaciones, SysUtils, DateUtils;
 
 Procedure Menu_Capacitaciones;
 
@@ -31,6 +32,7 @@ End;
 
 // Dar de alta
 Procedure DarDeAlta(pos: integer);
+
 Var 
   c: T_Capacitaciones;
   FechaInicio, FechaFin, Hoy: TDateTime;
@@ -46,50 +48,58 @@ Begin
   FechaFin := 0;
 
   // Validamos formato y conversion de fecha de inicio
-  if Length(c.Fecha_Inicio) = 10 then
+  If Length(c.Fecha_Inicio) = 10 Then
     FechaInicio := StrToDate(c.Fecha_Inicio)
-  else
+  Else
     FechaPermitida := false;
 
   // Validamos formato y conversion de fecha de fin
-  if Length(c.Fecha_Fin) = 10 then
+  If Length(c.Fecha_Fin) = 10 Then
     FechaFin := StrToDate(c.Fecha_Fin)
-  else
+  Else
     FechaPermitida := false;
 
-  if not FechaPermitida then
+  If Not FechaPermitida Then
     writeln('Formato de fecha inválido. Use DD/MM/AAAA.')
-  else
-    begin
+  Else
+    Begin
       // se verifica si el curso ya termino
-      if Hoy > FechaFin then
+      If Hoy > FechaFin Then
         writeln('No se puede dar de alta: la capacitación ya finalizó.')
-      else
-        begin
-          if Hoy < FechaInicio then
+      Else
+        Begin
+          If Hoy < FechaInicio Then
             writeln('La capacitación aún no comenzó, puede inscribirse.')
-          else
-            begin
+          Else
+            Begin
               // Si la capacitacion empezo, controla si pasaron mas de 5 dias
               DiasTranscurridos := DaysBetween(FechaInicio, Hoy);
-              if DiasTranscurridos <= 5 then
-                writeln('Capacitación en curso, dentro del plazo permitido para dar de alta.')
-              else
-                writeln('No se puede dar de alta: ya pasaron más de 5 días desde el inicio.');
-            end;
-        end;
+              If DiasTranscurridos <= 5 Then
+                writeln(
 
-      // Se da de alta solo si la capacitación esta inactiva y la fecha es valida
-      if (c.Estado_Capacitacion = false) and (Hoy <= FechaFin) then
-        begin
+          'Capacitación en curso, dentro del plazo permitido para dar de alta.'
+                )
+              Else
+                writeln(
+
+          'No se puede dar de alta: ya pasaron más de 5 días desde el inicio.'
+                );
+            End;
+        End;
+
+
+
+    // Se da de alta solo si la capacitación esta inactiva y la fecha es valida
+      If (c.Estado_Capacitacion = false) And (Hoy <= FechaFin) Then
+        Begin
           c.Estado_Capacitacion := true;
           seek(Archivo_Capacitaciones, pos);
           write(Archivo_Capacitaciones, c);
           writeln('Capacitación dada de alta correctamente.');
-        end
-      else if c.Estado_Capacitacion = true then
-        writeln('La capacitación ya está activa.');
-    end;
+        End
+      Else If c.Estado_Capacitacion = true Then
+             writeln('La capacitación ya está activa.');
+    End;
 End;
 
 // Dar de baja
@@ -247,7 +257,7 @@ Begin
               textcolor(yellow);
               writeln('1. Modificar');
 
-              If c.Estado_Capacitacion then 
+              If c.Estado_Capacitacion Then
                 writeln('2. Dar de baja')
               Else
                 writeln('3. Dar de alta');

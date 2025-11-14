@@ -3,7 +3,7 @@ Unit UnitMenuAlumnos;
 
 Interface
 
-Uses crt, CargasYMuestras, SysUtils;
+Uses crt, UnitAlumnos, SysUtils;
 
 Procedure Menu_Alumnos;
 
@@ -152,54 +152,55 @@ Begin
     writeln('Ingrese DNI del alumno (0 para salir): ');
     readln(dni);
 
-    dni := Trim(dni);   // evita que entradas con espacios provoquen que el menu no salga 
-    if dni <> '0' then
-    begin
-      pos := Buscar_Alumno(dni);
-
-      If pos = -1 Then
+    dni := Trim(dni);
+    // evita que entradas con espacios provoquen que el menu no salga 
+    If dni <> '0' Then
       Begin
-        writeln('Alumno no encontrado.');
-        writeln('¿Desea cargarlo? (S/N): ');
-        if UpCase(readkey) = 'S' then
-        begin
-          Cargar_Alumnos(a);
-          a.DNI := dni;
-          a.Estado_Alumno := true;
-          seek(Archivo_Alumnos, filesize(Archivo_Alumnos));
-          write(Archivo_Alumnos, a);
-          writeln;
-          writeln('Alumno cargado correctamente.');
-          readkey;
-        end;
-      End
-      Else
-      Begin
-        Repeat
-          seek(Archivo_Alumnos, pos);
-          read(Archivo_Alumnos, a);
-          clrscr;
-          Mostrar_Alumno(a);
-          writeln;
-          writeln('1. Modificar datos');
-          If a.Estado_Alumno then
-            writeln('2. Dar de baja')
-          else
-            writeln('3. Dar de alta');
+        pos := Buscar_Alumno(dni);
 
-          writeln('0. Volver');
-          write('Opcion: ');
-          readln(opcion);
+        If pos = -1 Then
+          Begin
+            writeln('Alumno no encontrado.');
+            writeln('¿Desea cargarlo? (S/N): ');
+            If UpCase(readkey) = 'S' Then
+              Begin
+                Cargar_Alumnos(a);
+                a.DNI := dni;
+                a.Estado_Alumno := true;
+                seek(Archivo_Alumnos, filesize(Archivo_Alumnos));
+                write(Archivo_Alumnos, a);
+                writeln;
+                writeln('Alumno cargado correctamente.');
+                readkey;
+              End;
+          End
+        Else
+          Begin
+            Repeat
+              seek(Archivo_Alumnos, pos);
+              read(Archivo_Alumnos, a);
+              clrscr;
+              Mostrar_Alumno(a);
+              writeln;
+              writeln('1. Modificar datos');
+              If a.Estado_Alumno Then
+                writeln('2. Dar de baja')
+              Else
+                writeln('3. Dar de alta');
 
-          Case opcion Of
-            1: Modificar_Alumno(pos);
-            2: If a.Estado_Alumno then DarDeBaja_Alumno(pos);
-            3: If not a.Estado_Alumno then DarDeAlta_Alumno(pos);
+              writeln('0. Volver');
+              write('Opcion: ');
+              readln(opcion);
+
+              Case opcion Of 
+                1: Modificar_Alumno(pos);
+                2: If a.Estado_Alumno Then DarDeBaja_Alumno(pos);
+                3: If Not a.Estado_Alumno Then DarDeAlta_Alumno(pos);
+              End;
+
+            Until opcion = 0;
           End;
-
-        Until opcion = 0;
       End;
-    end; 
 
   Until dni = '0';
 
