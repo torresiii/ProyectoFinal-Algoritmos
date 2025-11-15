@@ -1,6 +1,8 @@
 
 Unit UnitMenuEstadisticas;
 
+{$CODEPAGE UTF8}
+
 Interface
 
 Uses crt;

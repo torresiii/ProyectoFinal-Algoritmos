@@ -1,8 +1,9 @@
 
 Unit UnitMenuCapacitaciones;
 
-Interface
 {$CODEPAGE UTF8}
+
+Interface
 
 Uses crt, UnitCapacitaciones, SysUtils, DateUtils;
 
@@ -51,13 +52,17 @@ Begin
 
   If (Not ok1) Or (Not ok2) Then
     Begin
+      textcolor(LightCyan);
       Writeln('Fecha inválida. Use DD/MM/AAAA.');
+      textcolor(white);
       Exit;
     End;
 
   If Hoy > FechaFin Then
     Begin
+      textcolor(LightCyan);
       Writeln('No se puede dar de alta: la capacitación ya finalizó.');
+      textcolor(white);
       Exit;
     End;
 
@@ -69,6 +74,18 @@ Begin
       If DiasTranscurridos > 5 Then
         Begin
           Writeln(
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -122,10 +139,14 @@ Begin
   Read(Archivo_Capacitaciones, c);
 
   clrscr;
+  textcolor(LightCyan);
   Writeln('Datos actuales:');
+  textcolor(white);
   Mostrar_Capacitacion(c);
   Writeln;
 
+  textcolor(yellow);
+  Writeln('0. Codigo');
   Writeln('1. Nombre');
   Writeln('2. Fecha de inicio');
   Writeln('3. Fecha de fin');
@@ -134,56 +155,83 @@ Begin
   Writeln('6. Docentes');
   Writeln('7. Cantidad de alumnos');
   Writeln('8. Area');
-  Writeln('0. Cancelar');
+  Writeln('9. Cancelar');
+  textcolor(LightGreen);
   Write('Opción: ');
+  textcolor(white);
   Readln(opcion);
 
   Case opcion Of 
+    0:
+       Begin
+         textcolor(LightGreen);
+         Write('Nuevo codigo: ');
+         textcolor(white);
+         Readln(c.Codigo_Capacitacion);
+       End;
     1:
        Begin
+         textcolor(LightGreen);
          Write('Nuevo nombre: ');
+         textcolor(white);
          Readln(c.Nombre_Capacitacion);
        End;
     2:
        Begin
+         textcolor(LightGreen);
          Write('Nueva fecha de inicio (DD/MM/AAAA): ');
+         textcolor(white);
          Readln(c.Fecha_Inicio);
        End;
     3:
        Begin
+         textcolor(LightGreen);
          Write('Nueva fecha de fin (DD/MM/AAAA): ');
+         textcolor(white);
          Readln(c.Fecha_Fin);
        End;
     4:
        Begin
+         textcolor(LightGreen);
          Write('Nuevo tipo: ');
+         textcolor(white);
          Readln(c.Tipo_Capacitacion);
        End;
     5:
        Begin
+         textcolor(LightGreen);
          Write('Nueva cantidad de horas: ');
+         textcolor(white);
          Readln(c.Cantidad_Horas);
        End;
     6:
        Begin
+         textcolor(LightGreen);
          Write('Nuevos docentes: ');
+         textcolor(white);
          Readln(c.Docentes);
        End;
     7:
        Begin
+         textcolor(LightGreen);
          Write('Nueva cantidad de alumnos: ');
+         textcolor(white);
          Readln(c.Cantidad_Alumnos);
        End;
     8:
        Begin
+         textcolor(LightGreen);
          Write('Nueva area: ');
+         textcolor(white);
          Readln(c.Area);
        End;
   End;
 
   Seek(Archivo_Capacitaciones, pos);
   Write(Archivo_Capacitaciones, c);
+  textcolor(LightCyan);
   Writeln('Datos modificados.');
+  textcolor(white);
 End;
 
 Procedure Menu_Capacitaciones;
@@ -234,7 +282,9 @@ Begin
                 Seek(Archivo_Capacitaciones, FileSize(Archivo_Capacitaciones));
                 Write(Archivo_Capacitaciones, c);
 
+                textcolor(LightCyan);
                 Writeln('Capacitación agregada.');
+                textcolor(white);
                 ReadKey;
               End;
           End
@@ -277,8 +327,9 @@ Begin
             Until opcion = 0;
           End;
 
-        textcolor(red);
+        textcolor(LightGreen);
         Writeln('Presione una tecla para continuar...');
+        textcolor(white);
         ReadKey;
       End;
 

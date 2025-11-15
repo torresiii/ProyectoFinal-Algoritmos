@@ -1,12 +1,11 @@
 
 Unit UnitArbolCapacitaciones;
 
+{$CODEPAGE UTF8}
+
 Interface
 
 Uses UnitCapacitaciones, crt;
-
-
-// Nodo y operaciones para árbol binario de capacitaciones (clave: Codigo_Capacitacion)
 
 Type 
   PNodoCap = ^TNodoCap;

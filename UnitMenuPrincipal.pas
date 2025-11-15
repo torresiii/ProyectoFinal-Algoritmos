@@ -1,6 +1,8 @@
 
 Unit UnitMenuPrincipal;
 
+{$CODEPAGE UTF8}
+
 Interface
 
 Uses crt;

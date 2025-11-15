@@ -39,3 +39,5 @@ Se añade validacion de fecha inicio y fin para permitir dar o no de alta un cur
 Fin 29/10
 Inicio 15/11
 Correccion de errores en terminal
+Se mejoro listados
+Se agrego {$CODEPAGE UTF8} a todas las Unit

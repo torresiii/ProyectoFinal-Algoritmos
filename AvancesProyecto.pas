@@ -1,6 +1,8 @@
 
 Program AvancesProyecto;
 
+{$CODEPAGE UTF8}
+
 Uses 
 crt,
 UnitCapacitaciones,

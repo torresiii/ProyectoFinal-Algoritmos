@@ -1,6 +1,8 @@
 
 Unit UnitAlumnos;
 
+{$CODEPAGE UTF8}
+
 Interface
 
 Uses crt;

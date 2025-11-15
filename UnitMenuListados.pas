@@ -1,6 +1,8 @@
 
 Unit UnitMenuListados;
 
+{$CODEPAGE UTF8}
+
 Interface
 
 Uses 
@@ -38,8 +40,11 @@ Begin
   {$I+}
   If ioresult <> 0 Then
     Begin
+      textcolor(LightCyan);
       writeln('No se pudo abrir el archivo de capacitaciones.');
+      textcolor(LightGreen);
       writeln('Presione ENTER para volver...');
+      textcolor(white);
       readln;
       Exit;
     End;
@@ -51,11 +56,14 @@ Begin
       encontrada := false;
       contador := 0;
 
-      // Busca y muestra capacitaciones de esta area
+
+
+
+// Busca y muestra capacitaciones de esta area (ahora muestra activas e inactivas)
       While Not eof(Archivo_Capacitaciones) Do
         Begin
           read(Archivo_Capacitaciones, c);
-          If (c.Area = areas[i]) And (c.Estado_Capacitacion = true) Then
+          If (c.Area = areas[i]) Then
             Begin
               If Not encontrada Then
                 Begin
@@ -70,6 +78,10 @@ Begin
                       Codigo_Capacitacion, ')');
               writeln('   Tipo: ', c.Tipo_Capacitacion, ' | Horas: ', c.
                       Cantidad_Horas);
+              If c.Estado_Capacitacion Then
+                writeln('   Estado: Activo')
+              Else
+                writeln('   Estado: No activo');
             End;
         End;
     End;
@@ -77,8 +89,9 @@ Begin
   textcolor(yellow);
   writeln;
   writeln('=======================================');
-  textcolor(white);
+  textcolor(LightGreen);
   writeln('Presione ENTER para volver...');
+  textcolor(white);
   readln;
 
   close(Archivo_Capacitaciones);
@@ -100,8 +113,11 @@ Begin
   {$I+}
   If ioresult <> 0 Then
     Begin
+      textcolor(LightCyan);
       writeln('No se pudo abrir el archivo de alumnos.');
+      textcolor(LightGreen);
       writeln('Presione ENTER para volver...');
+      textcolor(white);
       readln;
       Exit;
     End;
@@ -112,15 +128,20 @@ Begin
   {$I+}
   If ioresult <> 0 Then
     Begin
+      textcolor(LightCyan);
       writeln('No se pudo abrir el archivo de capacitaciones.');
+      textcolor(LightGreen);
       writeln('Presione ENTER para volver...');
+      textcolor(white);
       readln;
       close(Archivo_Alumnos);
       Exit;
     End;
 
   // Solicitar DNI del alumno
+  textcolor(LightGreen);
   write('Ingrese el DNI del alumno: ');
+  textcolor(white);
   readln(dni);
   dni := Trim(dni);
 
@@ -173,7 +194,7 @@ Begin
 
   If Not encontrado Then
     Begin
-      textcolor(LightRed);
+      textcolor(LightCyan);
       writeln('No se encontró alumno con DNI: ', dni);
       textcolor(white);
     End
@@ -187,7 +208,9 @@ Begin
     End;
 
   writeln;
+  textcolor(LightGreen);
   writeln('Presione ENTER para volver...');
+  textcolor(white);
   readln;
 
   close(Archivo_Alumnos);
@@ -214,7 +237,9 @@ Begin
     writeln('4) Generar certificado de aprobacion (capacitacion/alumno)');
     writeln('5) Volver al menu anterior');
     writeln('---------------------------------------');
+    textcolor(LightGreen);
     write('Ingrese una opcion: ');
+    textcolor(white);
     readln(opcion);
 
     clrscr;
