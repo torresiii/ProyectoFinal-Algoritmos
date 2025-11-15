@@ -12,190 +12,180 @@ Var
   Archivo_Capacitaciones: file Of T_Capacitaciones;
 
 Implementation
-// Buscar capacitación por código
+
+
 Function Buscar_Capacitacion(codigo: String): integer;
 
 Var 
   c: T_Capacitaciones;
-  pos: integer;
 Begin
-  reset(Archivo_Capacitaciones);
-  pos := -1;
-  While (Not eof(Archivo_Capacitaciones)) And (pos = -1) Do
+  Seek(Archivo_Capacitaciones, 0);
+  Buscar_Capacitacion := -1;
+
+  While Not EOF(Archivo_Capacitaciones) Do
     Begin
-      read(Archivo_Capacitaciones, c);
+      Read(Archivo_Capacitaciones, c);
       If c.Codigo_Capacitacion = codigo Then
-        pos := filepos(Archivo_Capacitaciones) - 1;
+        Begin
+          Buscar_Capacitacion := FilePos(Archivo_Capacitaciones) - 1;
+          Exit;
+        End;
     End;
-  Buscar_Capacitacion := pos;
 End;
 
-// Dar de alta
 Procedure DarDeAlta(pos: integer);
 
 Var 
   c: T_Capacitaciones;
   FechaInicio, FechaFin, Hoy: TDateTime;
-  DiasTranscurridos: Integer;
-  FechaPermitida: boolean;
+  DiasTranscurridos: integer;
+  ok1, ok2: boolean;
 Begin
-  seek(Archivo_Capacitaciones, pos);
-  read(Archivo_Capacitaciones, c);
+  Seek(Archivo_Capacitaciones, pos);
+  Read(Archivo_Capacitaciones, c);
 
   Hoy := Date;
-  FechaPermitida := true;
-  FechaInicio := 0;
-  FechaFin := 0;
 
-  // Validamos formato y conversion de fecha de inicio
-  If Length(c.Fecha_Inicio) = 10 Then
-    FechaInicio := StrToDate(c.Fecha_Inicio)
-  Else
-    FechaPermitida := false;
+  ok1 := TryStrToDate(c.Fecha_Inicio, FechaInicio);
+  ok2 := TryStrToDate(c.Fecha_Fin,     FechaFin);
 
-  // Validamos formato y conversion de fecha de fin
-  If Length(c.Fecha_Fin) = 10 Then
-    FechaFin := StrToDate(c.Fecha_Fin)
-  Else
-    FechaPermitida := false;
+  If (Not ok1) Or (Not ok2) Then
+    Begin
+      Writeln('Fecha inválida. Use DD/MM/AAAA.');
+      Exit;
+    End;
 
-  If Not FechaPermitida Then
-    writeln('Formato de fecha inválido. Use DD/MM/AAAA.')
+  If Hoy > FechaFin Then
+    Begin
+      Writeln('No se puede dar de alta: la capacitación ya finalizó.');
+      Exit;
+    End;
+
+  If Hoy < FechaInicio Then
+    Writeln('La capacitación aún no comenzó, puede inscribirse.')
   Else
     Begin
-      // se verifica si el curso ya termino
-      If Hoy > FechaFin Then
-        writeln('No se puede dar de alta: la capacitación ya finalizó.')
-      Else
+      DiasTranscurridos := DaysBetween(FechaInicio, Hoy);
+      If DiasTranscurridos > 5 Then
         Begin
-          If Hoy < FechaInicio Then
-            writeln('La capacitación aún no comenzó, puede inscribirse.')
-          Else
-            Begin
-              // Si la capacitacion empezo, controla si pasaron mas de 5 dias
-              DiasTranscurridos := DaysBetween(FechaInicio, Hoy);
-              If DiasTranscurridos <= 5 Then
-                writeln(
-
-          'Capacitación en curso, dentro del plazo permitido para dar de alta.'
-                )
-              Else
-                writeln(
-
-          'No se puede dar de alta: ya pasaron más de 5 días desde el inicio.'
-                );
-            End;
-        End;
+          Writeln(
 
 
 
-    // Se da de alta solo si la capacitación esta inactiva y la fecha es valida
-      If (c.Estado_Capacitacion = false) And (Hoy <= FechaFin) Then
-        Begin
-          c.Estado_Capacitacion := true;
-          seek(Archivo_Capacitaciones, pos);
-          write(Archivo_Capacitaciones, c);
-          writeln('Capacitación dada de alta correctamente.');
+
+
+               'No se puede dar de alta: ya pasaron más de 5 días del inicio.'
+          );
+          Exit;
         End
-      Else If c.Estado_Capacitacion = true Then
-             writeln('La capacitación ya está activa.');
+      Else
+        Writeln('Capacitación en curso, dentro del plazo permitido.');
     End;
+
+  If Not c.Estado_Capacitacion Then
+    Begin
+      c.Estado_Capacitacion := True;
+      Seek(Archivo_Capacitaciones, pos);
+      Write(Archivo_Capacitaciones, c);
+      Writeln('Capacitación dada de alta correctamente.');
+    End
+  Else
+    Writeln('La capacitación ya está activa.');
 End;
 
-// Dar de baja
 Procedure DarDeBaja(pos: integer);
 
 Var 
   c: T_Capacitaciones;
 Begin
-  seek(Archivo_Capacitaciones, pos);
-  read(Archivo_Capacitaciones, c);
-  If c.Estado_Capacitacion = false Then
-    writeln('La capacitacion ya estaba dada de baja.')
+  Seek(Archivo_Capacitaciones, pos);
+  Read(Archivo_Capacitaciones, c);
+
+  If Not c.Estado_Capacitacion Then
+    Writeln('La capacitación ya estaba dada de baja.')
   Else
     Begin
-      c.Estado_Capacitacion := false;
-      seek(Archivo_Capacitaciones, pos);
-      write(Archivo_Capacitaciones, c);
-      writeln('Capacitacion dada de baja correctamente.');
+      c.Estado_Capacitacion := False;
+      Seek(Archivo_Capacitaciones, pos);
+      Write(Archivo_Capacitaciones, c);
+      Writeln('Capacitación dada de baja correctamente.');
     End;
 End;
 
-// Modificar capacitación
 Procedure Modificar_Capacitacion(pos: integer);
 
 Var 
   c: T_Capacitaciones;
   opcion: integer;
 Begin
-  seek(Archivo_Capacitaciones, pos);
-  read(Archivo_Capacitaciones, c);
+  Seek(Archivo_Capacitaciones, pos);
+  Read(Archivo_Capacitaciones, c);
+
   clrscr;
-  writeln('Datos actuales:');
+  Writeln('Datos actuales:');
   Mostrar_Capacitacion(c);
-  writeln;
-  writeln('Seleccione el dato a modificar:');
-  writeln('1. Nombre');
-  writeln('2. Fecha de inicio');
-  writeln('3. Fecha de fin');
-  writeln('4. Tipo');
-  writeln('5. Cantidad de horas');
-  writeln('6. Docentes');
-  writeln('7. Cantidad de alumnos');
-  writeln('8. Area');
-  writeln('0. Cancelar');
-  write('Opcion: ');
-  readln(opcion);
+  Writeln;
+
+  Writeln('1. Nombre');
+  Writeln('2. Fecha de inicio');
+  Writeln('3. Fecha de fin');
+  Writeln('4. Tipo');
+  Writeln('5. Cantidad de horas');
+  Writeln('6. Docentes');
+  Writeln('7. Cantidad de alumnos');
+  Writeln('8. Area');
+  Writeln('0. Cancelar');
+  Write('Opción: ');
+  Readln(opcion);
 
   Case opcion Of 
     1:
        Begin
-         write('Nuevo nombre: ');
-         readln(c.Nombre_Capacitacion);
+         Write('Nuevo nombre: ');
+         Readln(c.Nombre_Capacitacion);
        End;
     2:
        Begin
-         write('Nueva fecha de inicio (DD/MM/AAAA): ');
-         readln(c.Fecha_Inicio);
+         Write('Nueva fecha de inicio (DD/MM/AAAA): ');
+         Readln(c.Fecha_Inicio);
        End;
     3:
        Begin
-         write('Nueva fecha de fin (DD/MM/AAAA): ');
-         readln(c.Fecha_Fin);
+         Write('Nueva fecha de fin (DD/MM/AAAA): ');
+         Readln(c.Fecha_Fin);
        End;
     4:
        Begin
-         write('Nuevo tipo: ');
-         readln(c.Tipo_Capacitacion);
+         Write('Nuevo tipo: ');
+         Readln(c.Tipo_Capacitacion);
        End;
     5:
        Begin
-         write('Nueva cantidad de horas: ');
-         readln(c.Cantidad_Horas);
+         Write('Nueva cantidad de horas: ');
+         Readln(c.Cantidad_Horas);
        End;
     6:
        Begin
-         write('Nuevos docentes: ');
-         readln(c.Docentes);
+         Write('Nuevos docentes: ');
+         Readln(c.Docentes);
        End;
     7:
        Begin
-         write('Nueva cantidad de alumnos: ');
-         readln(c.Cantidad_Alumnos);
+         Write('Nueva cantidad de alumnos: ');
+         Readln(c.Cantidad_Alumnos);
        End;
     8:
        Begin
-         write('Nueva area: ');
-         readln(c.Area);
+         Write('Nueva area: ');
+         Readln(c.Area);
        End;
   End;
 
-  seek(Archivo_Capacitaciones, pos);
-  write(Archivo_Capacitaciones, c);
-  writeln('Datos modificados correctamente.');
+  Seek(Archivo_Capacitaciones, pos);
+  Write(Archivo_Capacitaciones, c);
+  Writeln('Datos modificados.');
 End;
 
-// MENÚ PRINCIPAL DE CAPACITACIONES (sin break)
 Procedure Menu_Capacitaciones;
 
 Var 
@@ -206,83 +196,95 @@ Var
   salir: boolean;
 Begin
   clrscr;
-  assign(Archivo_Capacitaciones, 'capacitaciones.dat');
-  {$I-}
-  reset(Archivo_Capacitaciones);
-  {$I+}
-  If ioresult <> 0 Then
-    rewrite(Archivo_Capacitaciones);
+  Assign(Archivo_Capacitaciones, 'capacitaciones.dat');
 
-  salir := false;
+  {$I-}
+  Reset(Archivo_Capacitaciones);
+  {$I+}
+  If IOResult <> 0 Then
+    Rewrite(Archivo_Capacitaciones);
+
+  salir := False;
+
   Repeat
     clrscr;
     textcolor(yellow);
-    write('Ingrese el codigo de la capacitacion (0 para salir): ');
+    Write('Ingrese el código de la capacitación (0 para salir): ');
     textcolor(white);
-    readln(codigo_cap);
+    Readln(codigo_cap);
 
     If codigo_cap = '0' Then
-      salir := true
+      salir := True
     Else
       Begin
         pos := Buscar_Capacitacion(codigo_cap);
 
         If pos = -1 Then
           Begin
-            writeln('Capacitacion no encontrada.');
-            write('Desea darla de alta? (S/N): ');
-            readln(resp);
+            Writeln('Capacitación no encontrada.');
+            Write('¿Agregarla? (S/N): ');
+            Readln(resp);
+
             If UpCase(resp) = 'S' Then
               Begin
                 Cargar_Capacitacion(c);
                 c.Codigo_Capacitacion := codigo_cap;
-                // aseguramos mismo código ingresado
-                c.Estado_Capacitacion := true;
-                seek(Archivo_Capacitaciones, filesize(Archivo_Capacitaciones));
-                write(Archivo_Capacitaciones, c);
-                writeln('Capacitacion agregada correctamente.');
+                c.Estado_Capacitacion := True;
+
+                Seek(Archivo_Capacitaciones, FileSize(Archivo_Capacitaciones));
+                Write(Archivo_Capacitaciones, c);
+
+                Writeln('Capacitación agregada.');
+                ReadKey;
               End;
           End
         Else
           Begin
             Repeat
-              seek(Archivo_Capacitaciones, pos);
-              read(Archivo_Capacitaciones, c);
+              Seek(Archivo_Capacitaciones, pos);
+              Read(Archivo_Capacitaciones, c);
 
               clrscr;
-              writeln('Capacitacion encontrada:');
-              textcolor(green);
+              Writeln('Capacitación encontrada:');
               Mostrar_Capacitacion(c);
-              writeln;
-              textcolor(yellow);
-              writeln('1. Modificar');
+              Writeln;
+
+              Writeln('1. Modificar');
 
               If c.Estado_Capacitacion Then
-                writeln('2. Dar de baja')
+                Writeln('2. Dar de baja')
               Else
-                writeln('3. Dar de alta');
+                Writeln('3. Dar de alta');
 
-              writeln('0. Volver a ingresar otro codigo o salir');
-              write('Opcion: ');
-              readln(opcion);
+              Writeln('0. Volver');
+              Write('Opción: ');
+              Readln(opcion);
 
               Case opcion Of 
                 1: Modificar_Capacitacion(pos);
-                2: DarDeBaja(pos);
-                3: DarDeAlta(pos);
+                2: If c.Estado_Capacitacion Then
+                     Begin
+                       DarDeBaja(pos);
+                       ReadKey;
+                     End;
+                3: If Not c.Estado_Capacitacion Then
+                     Begin
+                       DarDeAlta(pos);
+                       ReadKey;
+                     End;
               End;
 
             Until opcion = 0;
           End;
 
         textcolor(red);
-        writeln('Presione cualquier tecla para continuar...');
-        readkey;
+        Writeln('Presione una tecla para continuar...');
+        ReadKey;
       End;
 
-  Until salir = true;
+  Until salir;
 
-  close(Archivo_Capacitaciones);
+  Close(Archivo_Capacitaciones);
 End;
 
 End.

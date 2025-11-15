@@ -37,3 +37,5 @@ Inicio 28/10
 Se hacen control de alta y baja  en UnitMenuAlumnos y UnitMenuCapacitaciones
 Se añade validacion de fecha inicio y fin para permitir dar o no de alta un curso
 Fin 29/10
+Inicio 15/11
+Correccion de errores en terminal

@@ -1,9 +1,15 @@
 
 Program AvancesProyecto;
 
-Uses crt, UnitCapacitaciones, UnitAlumnos, UnitMenuAlumnos,
+Uses 
+crt,
+UnitCapacitaciones,
+UnitAlumnos,
+UnitMenuAlumnos,
 UnitMenuCapacitaciones,
-UnitMenuListados, UnitMenuEstadisticas, UnitMenuPrincipal;
+UnitMenuListados,
+UnitMenuEstadisticas,
+UnitMenuPrincipal;
 
 Var 
   opcion: integer;
