@@ -89,7 +89,7 @@ Begin
   close(Archivo_Capacitaciones);
 End;
 
-// -----------------------------------------
+
 Procedure Listado_Capacitaciones_Por_Alumno;
 
 Var 

@@ -18,8 +18,7 @@ Type
 
 Procedure InicializarArbolCap(Var raiz: PNodoCap);
 Procedure InsertarCapacitacion(Var raiz: PNodoCap; Const c: T_Capacitaciones);
-Function BuscarCapacitacionArbol(raiz: PNodoCap; Const codigo: String): PNodoCap
-;
+Function BuscarCapacitacionArbol(raiz: PNodoCap; Const codigo: String): PNodoCap;
 Procedure RecorrerEnOrdenCap(raiz: PNodoCap; accion: TAccionCap);
 Procedure LiberarArbolCap(Var raiz: PNodoCap);
 

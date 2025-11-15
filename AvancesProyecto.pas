@@ -36,7 +36,7 @@ Begin
         Begin
           clrscr;
           writeln('Opcion invalida.');
-          writeln('Presione una tecla para volver...');
+          writeln('Presione cualquier tecla para volver...');
           readkey;
         End;
     End;
